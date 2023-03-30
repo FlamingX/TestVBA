@@ -1,0 +1,49 @@
+Sub СборДанных()
+    Dim ПутьКПапке As String
+    Dim ИмяФайла As String
+    Dim КнигаДанных As Workbook
+    Dim КнигаОбъединения As Workbook
+    Dim ЛистДанных As Worksheet
+    Dim ЛистОбъединения As Worksheet
+    Dim ПоследняяСтрока As Long
+    
+    ' Установите путь к папке с файлами данных
+    ПутьКПапке = "C:\Путь\К\Папке\С\Файлами\Данных\"
+    
+    ' Откройте книгу объединения
+    Set КнигаОбъединения = ThisWorkbook
+    
+    ' Определите последнюю строку в листе объединения
+    Set ЛистОбъединения = КнигаОбъединения.Sheets("Лист1")
+    ПоследняяСтрока = ЛистОбъединения.Cells(Rows.Count, 1).End(xlUp).Row + 1
+    
+    ' Цикл по всем файлам в папке
+    ИмяФайла = Dir(ПутьКПапке & "*.xlsx")
+    Do While ИмяФайла <> ""
+        ' Откройте книгу данных
+        Set КнигаДанных = Workbooks.Open(ПутьКПапке & ИмяФайла)
+        
+        ' Скопируйте данные из листа данных в лист объединения
+        Set ЛистДанных = КнигаДанных.Sheets("Лист1")
+        ЛистДанных.Cells.Copy Destination:=ЛистОбъединения.Cells(ПоследняяСтрока, 1)
+        
+        ' Закройте книгу данных и перейдите к следующей книге
+        КнигаДанных.Close SaveChanges:=False
+        ИмяФайла = Dir()
+        
+        ' Обновите последнюю строку в листе объединения
+        ПоследняяСтрока = ЛистОбъединения.Cells(Rows.Count, 1).End(xlUp).Row + 1
+        
+        ' Разъединить ячейки перед переносом в файл 1
+        ЛистОбъединения.UsedRange.TextToColumns Destination:=ЛистОбъединения.Range("A1"), DataType:=xlDelimited, _
+            TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=False, Tab:=False, _
+            Semicolon:=False, Comma:=False, Space:=False, Other:=True, OtherChar:="|", _
+            FieldInfo:=Array(Array(1, 1), Array(2, 1), Array(3, 1), Array(4, 5), Array(6, 1), Array(7, 1), Array(8, 1), Array(9, 1), Array(10, 1), _
+            Array(11, 1), Array(12, 1), Array(13, 1))
+    Loop
+    
+    ' Сохраните и закройте книгу объединения
+    КнигаОбъединения.Save
+    КнигаОбъединения.Close
+    
+End Sub
