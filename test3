@@ -34,3 +34,84 @@ If FileExists <> "" Then
 End If
 
 Temp.Cells.Clear
+
+
+
+Dim fso As Object
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+If fso.FileExists("C:\Users\Username\Desktop\Example.xlsx") Then
+    ' Код для работы с файлом
+Else
+    MsgBox "Файл не найден."
+End If
+
+Dim FileRep2 As String: FileRep2 = PathOnly + "/2.xlsx"
+Dim rep2m3 As Range: Set rep2m3 = ws.Range("M14:Q16")
+Dim rep2m2 As Range: Set rep2m2 = ws.Range("G14:K16")
+Dim rep2m1 As Range: Set rep2m1 As Range = ws.Range("A14:E16")
+
+FileExists = Dir(FileRep2)
+
+If FileExists <> "" Then
+    Dim wb As Workbook
+    Set wb = Workbooks.Open(FileRep2)
+    Dim wsTemp As Worksheet
+    Set wsTemp = wb.Worksheets(1)
+    Dim arr() As Variant
+    arr = wsTemp.UsedRange.Value
+    wb.Close False
+    
+    Dim lr As Long, lc As Long
+    lr = UBound(arr, 1)
+    lc = UBound(arr, 2)
+    
+    If lr <> 3 Or lc <> 5 Then
+        MsgBox ("Íå óäàëîñü ðàñïîçíàòü øàáëîí îò÷¸òà " & FileRep2 & " " & lr & " " & lc)
+    Else:
+        rep2m2.Value = rep2m3.Value
+        rep2m3.ClearContents
+        rep2m1.Value = arr
+    End If
+End If
+
+Dim FileRep4 As String: FileRep4 = PathOnly + "/4.xlsx"
+Dim rep4m3 As Range: Set rep4m3 = ws.Range("G31:H33")
+Dim rep4m2 As Range: Set rep4m2 = ws.Range("D31:E33")
+Dim rep4m1 As Range: Set rep4m1 As Range = ws.Range("A31:B33")
+
+FileExists = Dir(FileRep4)
+
+If FileExists <> "" Then
+    Dim wb As Workbook
+    Set wb = Workbooks.Open(FileRep4)
+    Dim wsTemp As Worksheet
+    Set wsTemp = wb.Worksheets(1)
+    Dim arr() As Variant
+    arr = wsTemp.UsedRange.Value
+    wb.Close False
+    
+    Dim lr As Long, lc As Long
+    lr = UBound(arr, 1)
+    lc = UBound(arr, 2)
+    
+    If arr(1, 2) <> "Êîëè÷åñòâî íåîáåñïå÷åííûõ íîðì" Or lc > 2 Then
+        MsgBox ("Íå óäàëîñü ðàñïîçíàòü øàáëîí îò÷¸òà " & FileRep4 & " " & lr & " " & lc)
+    Else:
+        rep4m2.Value = rep4m3.Value
+        rep4m3.ClearContents
+        rep4m1.Value = arr
+    End If
+End If
+
+Dim ErrorMsg As String
+Dim UserInput As String
+
+' Код с ошибками
+If Err.Number <> 0 Then
+    ErrorMsg = ErrorMsg & Err.Description & vbNewLine
+End If
+
+' Отображение сообщений об ошибках в InputBox
+UserInput = InputBox(ErrorMsg, "Сообщения об ошибках")
+
