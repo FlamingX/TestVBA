@@ -1,0 +1,36 @@
+Dim ws As Worksheet: Set ws = Sheets("Data")
+Dim Temp As Worksheet: Set Temp = Sheets("Temp")
+Dim FileExists As String
+Dim PathOnly As String: PathOnly = ThisWorkbook.Path
+Dim FileRep1 As String: FileRep1 = PathOnly + "/1.xlsx"
+Dim rep1m3 As Range: Set rep1m3 = ws.Range("M3:Q9")
+Dim rep1m2 As Range: Set rep1m2 = ws.Range("G3:K9")
+Dim rep1m1 As Range: Set rep1m1 As Range = ws.Range("A3:E9")
+
+FileExists = Dir(FileRep1)
+
+Temp.Cells.Clear
+
+If FileExists <> "" Then
+    Dim wb As Workbook
+    Set wb = Workbooks.Open(FileRep1)
+    Dim wsTemp As Worksheet
+    Set wsTemp = wb.Worksheets(1)
+    Dim arr() As Variant
+    arr = wsTemp.UsedRange.Value
+    wb.Close False
+    
+    Dim lr As Long, lc As Long
+    lr = UBound(arr, 1)
+    lc = UBound(arr, 2)
+    
+    If lr <> 7 Or lc <> 5 Then
+        MsgBox ("Íå óäàëîñü ðàñïîçíàòü øàáëîí îò÷¸òà " & FileRep1 & " " & lr & " " & lc)
+    Else:
+        rep1m2.Value = rep1m3.Value
+        rep1m3.ClearContents
+        rep1m1.Value = arr
+    End If
+End If
+
+Temp.Cells.Clear
